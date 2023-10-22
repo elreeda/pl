@@ -1,42 +1,20 @@
-import {
-  createBrowserRouter,
-  RouterProvider,
-  redirect,
-} from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import Home from "../pages/Home";
+import homeAction from "./actions/home";
 import TrackingDetails from "../pages/TrackingDetails";
-import { getOrderByIdAndZipCode } from "../api/order";
+import trackLoader from "./loaders/track";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Home />,
+    action: homeAction,
   },
   {
     path: "/track",
     element: <TrackingDetails />,
-    loader: async ({ request }) => {
-      const { searchParams } = new URL(request.url);
-      const orderId = searchParams.get("orderId");
-      const zipCode = searchParams.get("zipCode");
-      if (!orderId || !zipCode) {
-        return redirect("/");
-      }
-      const getOrderFromStateUrl = window.history.state?.usr?.order;
-      if (
-        getOrderFromStateUrl &&
-        getOrderFromStateUrl._id === orderId &&
-        getOrderFromStateUrl.zip_code === zipCode
-      ) {
-        return getOrderFromStateUrl;
-      }
-      const response = await getOrderByIdAndZipCode({ id: orderId, zipCode });
-      if (response.code !== "success") {
-        return redirect("/");
-      }
-      return response.data;
-    },
+    loader: trackLoader,
   },
 ]);
 

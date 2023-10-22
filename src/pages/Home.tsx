@@ -1,49 +1,12 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useActionData, useNavigation, Form } from "react-router-dom";
 
-import { getOrderByIdAndZipCode } from "../api/order";
 import Logo from "../assets/logo.svg";
 
 const Home = () => {
-  const [formQuery, setFormQuery] = useState({
-    orderId: "",
-    zipCode: "",
-  });
-  const [formResponse, setFormResponse] = useState({
-    pending: false,
-    error: "",
-  });
-  const navigate = useNavigate();
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormQuery({
-      ...formQuery,
-      [name]: value,
-    });
-  };
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const { orderId, zipCode } = formQuery;
-    const response = await getOrderByIdAndZipCode({ id: orderId, zipCode });
-    if (response.hasOwnProperty("code") && response.code !== "success") {
-      setFormResponse({
-        pending: false,
-        error:
-          "We could not find your order. Please check your order number and zip code and try again.",
-      });
-    } else if (response.code === "success") {
-      navigate(
-        `/track?orderId=${response.data._id}&zipCode=${response.data.zip_code}`,
-        { state: { order: response.data } }
-      );
-    } else {
-      setFormResponse({
-        pending: false,
-        error: "Something went wrong. Please try again later.",
-      });
-    }
+  const navigation = useNavigation();
+  const action = useActionData() as {
+    pending: boolean;
+    error: string;
   };
 
   return (
@@ -55,7 +18,7 @@ const Home = () => {
             backgroundImage:
               "linear-gradient(200deg, rgba(0, 33, 114, .05) 0%, rgba(255, 255, 255, 0.05) 40%, rgba(0, 33, 114, .15) 100%)",
           }}
-        ></div>
+        />
         <svg
           width="1402"
           height="1192"
@@ -96,7 +59,7 @@ const Home = () => {
           Enter number your order and zip code to see the order details and
           shipping updates
         </p>
-        <form className="max-w-xl" onSubmit={handleSubmit}>
+        <Form className="max-w-xl" method="post">
           <div className="grid grid-cols-[1fr,1fr,auto] items-end gap-x-4">
             <div className="">
               <label
@@ -112,8 +75,6 @@ const Home = () => {
                   type="text"
                   placeholder="e.g. 0000PLFE8"
                   className="block bg-white w-full rounded-md border-0 px-3 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-pl-blue focus:outline-none"
-                  value={formQuery.orderId}
-                  onChange={handleInputChange}
                   required
                 />
               </div>
@@ -131,8 +92,6 @@ const Home = () => {
                   name="zipCode"
                   placeholder="e.g. 00000"
                   className="block bg-white w-full rounded-md border-0 px-3 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-pl-blue focus:outline-none"
-                  value={formQuery.zipCode}
-                  onChange={handleInputChange}
                   required
                 />
               </div>
@@ -141,15 +100,19 @@ const Home = () => {
               <button
                 type="submit"
                 className="rounded-md w-full bg-pl-blue px-3 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-pl-blue/90 focus:ring-1 focus:ring-inset focus:ring-blue-500 focus:outline-none"
-                disabled={formResponse.pending}
+                disabled={action?.pending}
               >
                 Track
               </button>
             </div>
           </div>
-        </form>
-        {formResponse.error ? (
-          <div className="max-w-xl rounded-md mt-4 py-2">
+        </Form>
+        {/* Accessibilty Tip: navigation.state helps us determins the state of the form
+            so we can remove the alert and add again in case or error.
+            this helpful to announce the error to screen readers.
+        */}
+        {action?.error && navigation.state !== "submitting" ? (
+          <div role="alert" className="max-w-xl rounded-md mt-4 py-2">
             <div className="flex items-center">
               <div className="shrink-0">
                 <svg
@@ -167,7 +130,7 @@ const Home = () => {
                 </svg>
               </div>
               <div className="ml-3">
-                <h3 className="text-sm text-red-700">{formResponse.error}</h3>
+                <h3 className="text-sm text-red-700">{action?.error}</h3>
               </div>
             </div>
           </div>

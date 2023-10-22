@@ -20,7 +20,7 @@ const TrackingDetails = () => {
       <div className="pt-2 pb-6 border-b-gray-200 border-b-[1px]">
         <h4 className="text-xl font-black mt-1 mb-4 uppercase">Order</h4>
         <div className="">
-          <span className="inline-block w-40">Order id</span>
+          <span className="inline-block w-40">Order nbr</span>
           <span className="font-bold">{data.delivery_info.orderNo}</span>
         </div>
         <div>
