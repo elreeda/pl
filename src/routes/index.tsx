@@ -24,7 +24,11 @@ const router = createBrowserRouter([
         return redirect("/");
       }
       const getOrderFromStateUrl = window.history.state?.usr?.order;
-      if (getOrderFromStateUrl) {
+      if (
+        getOrderFromStateUrl &&
+        getOrderFromStateUrl._id === orderId &&
+        getOrderFromStateUrl.zip_code === zipCode
+      ) {
         return getOrderFromStateUrl;
       }
       const response = await getOrderByIdAndZipCode({ id: orderId, zipCode });

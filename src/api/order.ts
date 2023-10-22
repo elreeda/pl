@@ -1,4 +1,10 @@
-export const getOrderByIdAndZipCode = async ({ id, zipCode }) => {
+export const getOrderByIdAndZipCode = async ({
+  id,
+  zipCode,
+}: {
+  id: string;
+  zipCode: string;
+}) => {
   try {
     const response = await fetch(
       `${process.env.REACT_APP_API_HOST}/orders/${id}?zip=${zipCode}`
@@ -7,6 +13,9 @@ export const getOrderByIdAndZipCode = async ({ id, zipCode }) => {
     return data;
   } catch (error) {
     console.error(error);
-    return null;
+    return {
+      code: "error",
+      message: "Error while fetching order",
+    };
   }
 };
