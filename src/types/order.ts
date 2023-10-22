@@ -24,7 +24,7 @@ export type Checkpoint = {
 export type Article = {
   articleNo: string;
   articleName: string;
-  articleImageUrl: string;
+  articleImageUrl?: string;
   quantity: number;
   price: number;
 };
