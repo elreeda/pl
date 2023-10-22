@@ -71,12 +71,12 @@ const Timeline: React.FC<TimelineProps> = ({ checkpoints }) => {
                       some white space in the UI.
                    */}
                 {/* <div className="h-40 w-80 rounded-md overflow-hidden mt-2 mb-8">
-                    <img
-                      className="h-full w-full object-cover object-center"
-                      src={cp.meta.pickup_address_map_url}
-                      alt=""
-                    />
-                  </div> */}
+                  <img
+                    className="h-full w-full object-cover object-center"
+                    src={cp.meta.pickup_address_map_url}
+                    alt=""
+                  />
+                </div> */}
               </a>
             ) : null}
           </div>

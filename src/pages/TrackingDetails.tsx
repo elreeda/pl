@@ -7,7 +7,7 @@ import dhlImg from "../assets/dhl.png";
 import upsImg from "../assets/ups.png";
 import { Order } from "../types/order";
 
-const CARRIER_LOGO: any = {
+const CARRIER_LOGO: Record<string, string> = {
   dhl: dhlImg,
   ups: upsImg,
 };
