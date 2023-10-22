@@ -1,5 +1,51 @@
-import Logo from "./assets/logo.svg";
-function App() {
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+import { getOrderByIdAndZipCode } from "../api/order";
+import Logo from "../assets/logo.svg";
+
+const Home = () => {
+  const [formQuery, setFormQuery] = useState({
+    orderId: "",
+    zipCode: "",
+  });
+  const [formResponse, setFormResponse] = useState({
+    pending: false,
+    error: "",
+  });
+  const navigate = useNavigate();
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormQuery({
+      ...formQuery,
+      [name]: value,
+    });
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const { orderId, zipCode } = formQuery;
+    const response = await getOrderByIdAndZipCode({ id: orderId, zipCode });
+    if (response.hasOwnProperty("code") && response.code !== "success") {
+      setFormResponse({
+        pending: false,
+        error:
+          "We could not find your order. Please check your order number and zip code and try again.",
+      });
+    } else if (response.code === "success") {
+      navigate(
+        `/track?orderId=${response.data._id}&zipCode=${response.data.zip_code}`,
+        { state: { order: response.data } }
+      );
+    } else {
+      setFormResponse({
+        pending: false,
+        error: "Something went wrong. Please try again later.",
+      });
+    }
+  };
+
   return (
     <div className="max-w-3xl mx-auto px-6 pt-40">
       <div className="fixed inset-0 z-[-1]">
@@ -47,55 +93,88 @@ function App() {
           Track your order
         </h2>
         <p className="leading-6 mt-6 mb-8 max-w-xs">
-          Enter your order and zip code to see the order details and shipping
-          updates
+          Enter number your order and zip code to see the order details and
+          shipping updates
         </p>
-        <div className="flex items-end gap-x-4">
-          <div className="">
-            <label
-              htmlFor="orderId"
-              className="block text-sm font-medium leading-6 text-gray-900"
-            >
-              Order number
-            </label>
-            <div className="mt-2">
-              <input
-                id="orderId"
-                name="orderId"
-                type="text"
-                placeholder="e.g. 0000PLFE8"
-                className="block bg-white w-full rounded-md border-0 px-3 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-pl-blue focus:outline-none"
-              />
+        <form className="max-w-xl" onSubmit={handleSubmit}>
+          <div className="grid grid-cols-[1fr,1fr,auto] items-end gap-x-4">
+            <div className="">
+              <label
+                htmlFor="orderId"
+                className="block text-sm font-medium leading-6 text-gray-900"
+              >
+                Order number
+              </label>
+              <div className="mt-2">
+                <input
+                  id="orderId"
+                  name="orderId"
+                  type="text"
+                  placeholder="e.g. 0000PLFE8"
+                  className="block bg-white w-full rounded-md border-0 px-3 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-pl-blue focus:outline-none"
+                  value={formQuery.orderId}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+            </div>
+            <div className="">
+              <label
+                htmlFor="zipCode"
+                className="block text-sm font-medium leading-6 text-gray-900"
+              >
+                Zip code
+              </label>
+              <div className="mt-2">
+                <input
+                  id="zipCode"
+                  name="zipCode"
+                  placeholder="e.g. 00000"
+                  className="block bg-white w-full rounded-md border-0 px-3 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-pl-blue focus:outline-none"
+                  value={formQuery.zipCode}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+            </div>
+            <div className="w-32">
+              <button
+                type="submit"
+                className="rounded-md w-full bg-pl-blue px-3 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-pl-blue/90 focus:ring-1 focus:ring-inset focus:ring-blue-500 focus:outline-none"
+                disabled={formResponse.pending}
+              >
+                Track
+              </button>
             </div>
           </div>
-          <div className="">
-            <label
-              htmlFor="zipCode"
-              className="block text-sm font-medium leading-6 text-gray-900"
-            >
-              Zip code
-            </label>
-            <div className="mt-2">
-              <input
-                id="zipCode"
-                name="zipCode"
-                placeholder="e.g. 00000"
-                className="block bg-white w-full rounded-md border-0 px-3 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-pl-blue focus:outline-none"
-              />
+        </form>
+        {formResponse.error ? (
+          <div className="max-w-xl rounded-md mt-4 py-2">
+            <div className="flex items-center">
+              <div className="shrink-0">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  aria-hidden="true"
+                  className="w-5 h-5 text-red-400"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z"
+                    clipRule="evenodd"
+                  ></path>
+                </svg>
+              </div>
+              <div className="ml-3">
+                <h3 className="text-sm text-red-700">{formResponse.error}</h3>
+              </div>
             </div>
           </div>
-          <div className="w-20">
-            <button
-              type="button"
-              className="rounded-md w-full bg-pl-blue px-3 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-pl-blue/90 focus:ring-1 focus:ring-inset focus:ring-pl-blue focus:outline-none"
-            >
-              Track
-            </button>
-          </div>
-        </div>
+        ) : null}
       </div>
     </div>
   );
-}
+};
 
-export default App;
+export default Home;
