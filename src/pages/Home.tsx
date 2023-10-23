@@ -11,7 +11,7 @@ const Home = () => {
 
   return (
     <div className="max-w-3xl mx-auto px-6 pt-40">
-      <div className="fixed inset-0 z-[-1]">
+      <div className="fixed inset-0 z-[-1]" aria-hidden="true">
         <div
           className="absolute inset-0"
           style={{
@@ -60,7 +60,7 @@ const Home = () => {
           shipping updates
         </p>
         <Form className="max-w-xl" method="post">
-          <div className="grid grid-cols-[1fr,1fr,auto] items-end gap-x-4">
+          <div className="grid grid-rows-[1fr,1fr,1fr] items-end gap-x-4 sm:grid-cols-[1fr,1fr,auto]">
             <div className="">
               <label
                 htmlFor="orderId"

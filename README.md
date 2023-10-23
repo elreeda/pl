@@ -10,7 +10,7 @@
 
 ## 1. Introduction<a name="introduction"></a>
 
-A robust and beautiful order tracker app.
+A robust and beautiful order tracker app. [Live preview](https://parcellab.vercel.app)
 
 ## 2. Getting Started<a name="getting-started"></a>
 
@@ -59,4 +59,4 @@ npm run e2e:components
 
 In addition to React, we've incorporated Tailwind CSS for styling, and with React Router version 6, you'll notice some differences compared to the typical usage of React Router versions prior to 5. We are relying on forms, loaders and actions for data retrieval.
 
-I have also create a little edge function that hosted on Vercel to mock our API.
+We have also create a little edge function that is hosted on Vercel to mock our API.

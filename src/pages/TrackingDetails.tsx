@@ -32,7 +32,7 @@ const TrackingDetails = () => {
       </div>
       <div className="pt-8 pb-6 border-b-gray-200 border-b-[1px]">
         <h4 className="text-xl font-black mt-1 mb-4 uppercase">Articles</h4>
-        <div className="mt-3 mb-4 flex gap-8">
+        <div className="mt-3 mb-4 flex flex-wrap gap-8">
           <Articles articles={data.delivery_info.articles} />
         </div>
       </div>

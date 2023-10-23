@@ -8,7 +8,7 @@ const Articles: React.FC<ArticlesProps> = ({ articles }) => {
   return (
     <>
       {articles.map((article) => (
-        <div key={article.articleNo} className="flex gap-x-4">
+        <div key={article.articleNo} className="flex flex-wrap gap-y-2 gap-x-4">
           <div className="h-28 w-28 rounded-md overflow-hidden">
             {article.articleImageUrl ? (
               <img
