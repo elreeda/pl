@@ -60,7 +60,7 @@ const Home = () => {
           shipping updates
         </p>
         <Form className="max-w-xl" method="post">
-          <div className="grid grid-rows-[1fr,1fr,1fr] items-end gap-x-4 sm:grid-cols-[1fr,1fr,auto]">
+          <div className="grid items-end gap-4 sm:grid-cols-[1fr,1fr,auto]">
             <div className="">
               <label
                 htmlFor="orderId"
